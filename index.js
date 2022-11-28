@@ -2,9 +2,10 @@ const { Client, GatewayIntentBits, ChannelType, PermissionsBitField, EmbedBuilde
 const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.GuildMembers] })
 
 const fs = require('fs')
+const { off } = require('process')
 
 const JSONdb = require('simple-json-db')
-const db = new JSONdb('./channels.json')
+const db = new JSONdb('./database.json')
 
 require('dotenv').config()
 
@@ -45,6 +46,23 @@ client.on('ready', async () => {
         console.log('Successfully reloaded application (/) commands.')
     } catch (error) {
         console.error(error)
+    }
+
+    client.user.setActivity('in the clouds', { type: 'PLAYING' })
+
+    // check if database has pending bump reminders
+    const dbJSON = await db.JSON()
+    for (const [key, value] of Object.entries(dbJSON)) {
+        if (key.startsWith('bump_')) {
+            const userId = key.split('_')[1]
+            const timeRemaining = value - Date.now()
+            const channel = client.channels.cache.get('1045584005447290881')
+
+            setTimeout(async () => {
+                await channel.send({ content: `<@${userId}>, You can bump again!` })
+                await db.delete(`bump_${userId}`)
+            }, timeRemaining)
+        }
     }
 })
 
@@ -87,8 +105,12 @@ client.on('messageCreate', async (message) => {
     if (message.type === MessageType.ChatInputCommand && message.channelId === '1041869163301445662' && message.interaction.commandName === 'bump' && message.author.id === '302050872383242240') {
         await message.channel.send({ content: `<@${message.interaction.user.id}>, Thanks for bumping the server! I will ping you again in 2 hours when you can bump again.` })
 
+        // persist timeout after restart
+        await db.set(`bump_${message.interaction.user.id}`, Date.now() + 7200000)
+
         setTimeout(async () => {
-            message.channel.send({ content: `<@${message.interaction.user.id}>, You can bump again!` })
+            await message.channel.send({ content: `<@${message.interaction.user.id}>, You can bump again!` })
+            await db.delete(`bump_${message.interaction.user.id}`)
         }, 7200000)
     }
 })
