@@ -25,7 +25,7 @@
     },
     {
         "name": "webhook-sharex",
-        "description": "Generates a ShareX Discord Webhook config file."
+        "description": "Generates a ShareX Discord Webhook config file"
     },
     {
         "name": "Share upload channel",
