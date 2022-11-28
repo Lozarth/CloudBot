@@ -1,0 +1,38 @@
+[
+    {
+        "name": "share",
+        "description": "Shares your upload channel with another user",
+        "options": [
+            {
+                "name": "user",
+                "description": "User to share the channel with",
+                "type": 6,
+                "required": true
+            }
+        ]
+    },
+    {
+        "name": "unshare",
+        "description": "Unshare your upload channel with another user",
+        "options": [
+            {
+                "name": "user",
+                "description": "User to unshare the channel with",
+                "type": 6,
+                "required": true
+            }
+        ]
+    },
+    {
+        "name": "webhook-sharex",
+        "description": "Generates a ShareX Discord Webhook config file."
+    },
+    {
+        "name": "Share upload channel",
+        "type": 2
+    },
+    {
+        "name": "Unshare upload channel",
+        "type": 2
+    }
+]
