@@ -141,18 +141,6 @@ client.on('interactionCreate', async (interaction) => {
 
             return interaction.reply({ content: 'Left channel!', ephemeral: true })
         }
-
-        if (interaction.customId === 'toggle') {
-            if (interaction.user.id !== '339492485854396426') return interaction.reply({ content: 'You do not have permission to use this command.', ephemeral: true })
-
-            if (interaction.member.roles.cache.has('1041848288070090902')) {
-                await interaction.member.roles.remove('1041848288070090902')
-                return interaction.reply({ content: 'You have disabled channel management.', ephemeral: true })
-            } else {
-                await interaction.member.roles.add('1041848288070090902')
-                return interaction.reply({ content: 'You have enabled channel management.', ephemeral: true })
-            }
-        }
     }
 
     if (interaction.isChatInputCommand()) {
