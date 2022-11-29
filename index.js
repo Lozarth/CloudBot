@@ -2,7 +2,6 @@ const { Client, GatewayIntentBits, ChannelType, PermissionsBitField, EmbedBuilde
 const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.GuildMembers] })
 
 const fs = require('fs')
-const { off } = require('process')
 
 const JSONdb = require('simple-json-db')
 const db = new JSONdb('./database.json')
