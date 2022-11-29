@@ -1,4 +1,4 @@
-const { Client, GatewayIntentBits, ChannelType, PermissionsBitField, EmbedBuilder, ButtonBuilder, ActionRowBuilder, MessageType, ButtonStyle, Collection, REST, Routes } = require('discord.js')
+const { Client, GatewayIntentBits, MessageType, ActivityType, Collection, REST, Routes } = require('discord.js')
 const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.GuildMembers] })
 
 const fs = require('fs')
@@ -47,7 +47,7 @@ client.on('ready', async () => {
         console.error(error)
     }
 
-    client.user.setActivity('in the clouds', { type: 'PLAYING' })
+    client.user.setActivity('in the clouds', { type: ActivityType.Playing })
 
     // check if database has pending bump reminders
     const dbJSON = await db.JSON()
