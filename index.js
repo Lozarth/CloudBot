@@ -55,7 +55,7 @@ client.on('ready', async () => {
         if (key.startsWith('bump_')) {
             const userId = key.split('_')[1]
             const timeRemaining = value - Date.now()
-            const channel = client.channels.cache.get('1045584005447290881')
+            const channel = client.channels.cache.get('1041869163301445662')
 
             setTimeout(async () => {
                 await channel.send({ content: `<@${userId}>, You can bump again!` })
