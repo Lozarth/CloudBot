@@ -11,7 +11,7 @@ module.exports = {
                 new ButtonBuilder()
                     .setLabel('Confirm Delete')
                     .setStyle(ButtonStyle.Danger)
-                    .setCustomId('delete_confirm')
+                    .setCustomId('delete_channel_confirm')
             )
 
         return interaction.reply({ content: 'Are you sure you want to delete this channel? It cannot be undone and your files cannot be recovered.', components: [row], ephemeral: true })

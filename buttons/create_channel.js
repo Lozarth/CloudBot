@@ -43,9 +43,9 @@ module.exports = {
         const row = new ActionRowBuilder()
             .addComponents(
                 new ButtonBuilder()
-                    .setLabel('Delete Me')
+                    .setLabel('Delete Channel')
                     .setStyle(ButtonStyle.Danger)
-                    .setCustomId('delete_me'),
+                    .setCustomId('delete_channel'),
                 new ButtonBuilder()
                     .setLabel('Leave Channel')
                     .setStyle(ButtonStyle.Secondary)
