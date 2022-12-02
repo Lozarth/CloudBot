@@ -1,3 +1,5 @@
+// legacy code
+
 const { ButtonStyle, ActionRowBuilder, ButtonBuilder } = require('discord.js')
 
 module.exports = {
