@@ -51,6 +51,7 @@ client.on('ready', async () => {
 
     // check if database has pending bump reminders
     const dbJSON = await db.JSON()
+    
     for (const [key, value] of Object.entries(dbJSON)) {
         if (key.startsWith('bump_')) {
             const userId = key.split('_')[1]
@@ -69,7 +70,7 @@ client.on('interactionCreate', async (interaction) => {
     if (interaction.isChatInputCommand()) {
         if (client.commands.get(interaction.commandName)) {
             try {
-                client.commands.get(interaction.commandName).run(client, interaction, db)
+                await client.commands.get(interaction.commandName).run(client, interaction, db)
             } catch (error) {
                 console.error(error)
                 return interaction.reply({ content: `There was an error while executing this command!\n\`\`${error}\`\``, ephemeral: true })
@@ -80,7 +81,7 @@ client.on('interactionCreate', async (interaction) => {
     if (interaction.isButton()) {
         if (client.buttons.get(interaction.customId)) {
             try {
-                client.buttons.get(interaction.customId).run(client, interaction, db)
+                await client.buttons.get(interaction.customId).run(client, interaction, db)
             } catch (error) {
                 console.error(error)
                 return interaction.reply({ content: `There was an error while executing this button!\n\`\`${error}\`\``, ephemeral: true })
@@ -91,7 +92,7 @@ client.on('interactionCreate', async (interaction) => {
     if (interaction.isContextMenuCommand()) {
         if (client.contextMenus.get(interaction.commandName)) {
             try {
-                client.contextMenus.get(interaction.commandName).run(client, interaction, db)
+                await client.contextMenus.get(interaction.commandName).run(client, interaction, db)
             } catch (error) {
                 console.error(error)
                 return interaction.reply({ content: `There was an error while executing this context menu!\n\`\`${error}\`\``, ephemeral: true })
