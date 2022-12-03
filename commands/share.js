@@ -15,6 +15,8 @@ module.exports = {
             ViewChannel: true
         })
 
+        console.log(`${interaction.user.tag} shared their upload channel with ${targetUser.tag}.`)
+
         return interaction.reply({ content: 'Shared upload channel with user! Use **/unshare** to unshare.', ephemeral: true })
     }
 }

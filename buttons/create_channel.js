@@ -67,7 +67,7 @@ module.exports = {
         await db.set(interaction.user.id, channel.id)
         await db.set(channel.id, interaction.user.id)
 
-        console.log(`Created personal channel for ${interaction.user.id}`)
+        console.log(`Created personal channel for ${interaction.user.name}`)
 
         return interaction.reply({ content: `Created personal channel <#${channel.id}>`, ephemeral: true })
     }

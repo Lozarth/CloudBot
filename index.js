@@ -127,6 +127,8 @@ client.on('guildMemberRemove', async (member) => {
             await db.delete(member.user.id)
             await db.delete(channel.id)
 
+            console.log(`Deleted upload channel for ${member.user.name} because they left and didn't upload anything.`)
+
             return channel.delete()
         }
     }

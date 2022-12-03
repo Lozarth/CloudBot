@@ -1,4 +1,4 @@
-// legacy code
+// same as delete_channel.js
 
 const { ButtonStyle, ActionRowBuilder, ButtonBuilder } = require('discord.js')
 

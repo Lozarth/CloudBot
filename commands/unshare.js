@@ -15,6 +15,8 @@ module.exports = {
             ViewChannel: false
         })
 
+        console.log(`${interaction.user.name} unshared their upload channel with ${targetUser.name}.`)
+
         return interaction.reply({ content: 'Unshared upload channel with user!', ephemeral: true })
     }
 }
