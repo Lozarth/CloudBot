@@ -116,7 +116,13 @@ client.on('messageCreate', async (message) => {
     }
 })
 
+client.on('guildMemberAdd', async (member) => {
+    console.log(`${member.user.username} joined the server!`)
+})
+
 client.on('guildMemberRemove', async (member) => {
+    console.log(`${member.user.username} left the server!`)
+
     const hasUploadChannel = await db.has(member.user.id)
     if (hasUploadChannel) {
         const uploadChannelId = await db.get(member.user.id)
@@ -124,11 +130,12 @@ client.on('guildMemberRemove', async (member) => {
         const messages = await channel.messages.fetch({ limit: 100 })
 
         const userMessages = messages.filter(message => message.author.id === member.user.id)
+
         if (userMessages.size === 0) {
             await db.delete(member.user.id)
             await db.delete(channel.id)
 
-            console.log(`Deleted upload channel for ${member.user.name} because they left and didn't upload anything.`)
+            console.log(`Deleted upload channel for ${member.user.username} because they left and didn't upload anything.`)
 
             return channel.delete()
         }
