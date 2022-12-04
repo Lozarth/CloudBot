@@ -1,5 +1,9 @@
 [
     {
+        "name": "ping",
+        "description": "Shows detailed statistics about the bot"
+    },
+    {
         "name": "share",
         "description": "Shares your upload channel with another user",
         "options": [
