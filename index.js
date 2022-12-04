@@ -103,7 +103,7 @@ client.on('interactionCreate', async (interaction) => {
 
 client.on('messageCreate', async (message) => {
     if (message.type === MessageType.ChatInputCommand && message.channelId === '1041869163301445662' && message.interaction.commandName === 'bump' && message.author.id === '302050872383242240') {
-        console.log(`${message.author.username} bumped the server!`)
+        console.log(`${message.interaction.user.username} bumped the server!`)
         await message.channel.send({ content: `<@${message.interaction.user.id}>, Thanks for bumping the server! I will ping you again in 2 hours when you can bump again.\nTimer: <t:${Math.floor(Date.now() / 1000) + 7200}:R>` })
 
         // persist timeout after restart
