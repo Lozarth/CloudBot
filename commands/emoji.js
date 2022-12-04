@@ -3,7 +3,7 @@ const { PermissionsBitField, Utils } = require('discord.js')
 module.exports = {
     name: 'emoji',
     run: async (client, interaction, db) => {
-        if (interaction.member.permissions.has(PermissionsBitField.Flags.ManageEmojis)) {
+        if (interaction.member.permissions.has(PermissionsBitField.Flags.ManageEmojisAndStickers)) {
             const emoji = interaction.options.getString('emoji')
             const name = interaction.options.getString('name')
 
@@ -12,7 +12,7 @@ module.exports = {
             if (parsedEmoji.id) {
                 const guild = interaction.guild
 
-                const emoji = await guild.emojis.create(`https://cdn.discordapp.com/emojis/${parsedEmoji.id}.${parsedEmoji.animated ? 'gif' : 'png'}`, name)
+                const emoji = await guild.emojis.create({ attachment: `https://cdn.discordapp.com/emojis/${parsedEmoji.id}.${parsedEmoji.animated ? 'gif' : 'png'}`, name: name })
 
                 return interaction.reply({ content: `Created emoji: ${emoji}` })
             } else {
