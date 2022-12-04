@@ -8,7 +8,7 @@ module.exports = {
             ViewChannel: false
         })
 
-        console.log(`${interaction.user.name} left an upload channel.`)
+        console.log(`${interaction.user.username} left an upload channel.`)
 
         return interaction.reply({ content: 'Left channel!', ephemeral: true })
     }

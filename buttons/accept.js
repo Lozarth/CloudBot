@@ -11,7 +11,7 @@ module.exports = {
             return console.error(error)
         }
 
-        console.log(`${interaction.user.name} accepted the rules.`)
+        console.log(`${interaction.user.username} accepted the rules.`)
 
         return interaction.reply({ content: 'You have accepted the rules!', ephemeral: true })
     }

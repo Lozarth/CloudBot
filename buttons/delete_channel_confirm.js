@@ -4,7 +4,7 @@ module.exports = {
         await db.delete(interaction.user.id)
         await db.delete(interaction.channel.id)
 
-        console.log(`${interaction.user.name} deleted their upload channel.`)
+        console.log(`${interaction.user.username} deleted their upload channel.`)
 
         return interaction.channel.delete()
     }

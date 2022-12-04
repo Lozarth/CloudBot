@@ -48,7 +48,7 @@ module.exports = {
                 URL: '{json:attachments[0].url}'
             })
 
-            console.log(`${interaction.user.name} generated a ShareX config.`)
+            console.log(`${interaction.user.username} generated a ShareX config.`)
 
             return interaction.reply({ content: 'Download and open the file below with ShareX to start uploading files to your upload channel via ShareX.', files: [{ name: 'Discord Webhook.sxcu', attachment: Buffer.from(ShareXConfig) }], ephemeral: true })
         }
