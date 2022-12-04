@@ -14,23 +14,6 @@ module.exports = {
                 { name: 'API Ping', value: `${apiPing}ms`, inline: true }
             )
             .setColor('#5564f2')
-
-        // system info
-        const cpu = os.cpus()[0].model
-        const cpuUsage = Math.round(process.cpuUsage().system / 1024 / 1024)
-        const ramUsage = Math.round(process.memoryUsage().heapUsed / 1024 / 1024)
-        const ramTotal = Math.round(os.totalmem() / 1024 / 1024)
-
-        const embed2 = new EmbedBuilder()
-            .setTitle('System Info')
-            .setFields(
-                { name: 'CPU', value: cpu, inline: true },
-                { name: 'CPU Usage', value: `${cpuUsage}MB`, inline: true },
-                { name: 'RAM Usage', value: `${ramUsage}MB`, inline: true },
-                { name: 'RAM Total', value: `${ramTotal}MB`, inline: true }
-            )
-            .setColor('#5564f2')
-
-        return interaction.reply({ embeds: [embed, embed2] })
+            .setFooter({ text: `Running on Ubuntu ${os.release()} (${os.arch()})`, iconURL: 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/ab/Logo-ubuntu_cof-orange-hex.svg/1200px-Logo-ubuntu_cof-orange-hex.svg.png' })
     }
 }
