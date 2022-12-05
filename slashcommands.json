@@ -1,7 +1,7 @@
 [
     {
         "name": "ping",
-        "description": "Shows detailed statistics about the bot"
+        "description": "Shows the bot's ping"
     },
     {
         "name": "share",
@@ -74,7 +74,7 @@
                 "required": true,
                 "choices": [
                     {
-                        "name": "Youtube",
+                        "name": "YouTube",
                         "value": "youtube"
                     },
                     {
@@ -82,7 +82,7 @@
                         "value": "twitter"
                     },
                     {
-                        "name": "Tiktok",
+                        "name": "TikTok",
                         "value": "tiktok"
                     },
                     {

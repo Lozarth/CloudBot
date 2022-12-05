@@ -14,6 +14,6 @@ module.exports = {
             )
             .setColor('#5564f2')
 
-        return interaction.reply({ embeds: [embed] })
+        return interaction.reply({ embeds: [embed], ephemeral: true })
     }
 }
