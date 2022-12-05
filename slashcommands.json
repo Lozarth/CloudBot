@@ -56,5 +56,41 @@
                 "required": true
             }
         ]
+    },
+    {
+        "name": "download",
+        "description": "Downloads a video from Youtube, Twitter, Tiktok, Instagram",
+        "options": [
+            {
+                "name": "url",
+                "description": "The url of the video",
+                "type": 3,
+                "required": true
+            },
+            {
+                "name": "platform",
+                "description": "The platform of the video",
+                "type": 3,
+                "required": true,
+                "choices": [
+                    {
+                        "name": "Youtube",
+                        "value": "youtube"
+                    },
+                    {
+                        "name": "Twitter",
+                        "value": "twitter"
+                    },
+                    {
+                        "name": "Tiktok",
+                        "value": "tiktok"
+                    },
+                    {
+                        "name": "Instagram",
+                        "value": "instagram"
+                    }
+                ]
+            }
+        ]
     }
 ]
