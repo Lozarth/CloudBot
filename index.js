@@ -143,3 +143,8 @@ client.on('guildMemberRemove', async (member) => {
 })
 
 client.login(process.env.TOKEN)
+
+// anticrash
+
+process.on('unhandledRejection', error => console.error('Unhandled promise rejection:', error))
+process.on('uncaughtException', error => console.error('Uncaught exception:', error))

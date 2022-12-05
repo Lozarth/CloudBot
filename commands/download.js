@@ -54,8 +54,13 @@ module.exports = {
 
             await interaction.deferReply()
 
-            const tweet = await twitter(url)
-
+            try {
+                var tweet = await twitter(url)
+            } catch (error) {
+                console.error(error)
+                return interaction.followUp({ content: `There was an error while downloading the video!\n\`\`${error}\`\`` })
+            }
+            
             if (!tweet.found) return interaction.followUp({ content: 'Tweet not found!' })
 
             if (tweet.type === 'video' || tweet.type === 'video/gif') {
@@ -65,7 +70,7 @@ module.exports = {
             }
         } else if (platform === 'tiktok') {
             // tiktok has a fuckton of video urls so i'm not gonna bother with regex
-            
+
             await interaction.deferReply()
 
             const request1 = await axios.post('https://tikfast.net/tik-download/download-link', {
