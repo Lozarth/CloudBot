@@ -80,7 +80,7 @@ module.exports = {
             })
 
             const videoData = request1.data.data[0].water_free_link
-            1
+
             const video = await axios.post('https://tikfast.net/tik-download/download', {
                 url: videoData.toString()
             })
