@@ -54,8 +54,10 @@ module.exports = {
 
             await interaction.deferReply()
 
+            const urlNoQuery = url.split('?')[0]
+
             try {
-                var tweet = await twitter(url)
+                var tweet = await twitter(urlNoQuery)
             } catch (error) {
                 console.error(error)
                 return interaction.followUp({ content: `There was an error while downloading the video!\n\`\`${error}\`\`` })

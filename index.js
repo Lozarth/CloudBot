@@ -73,7 +73,7 @@ client.on('interactionCreate', async (interaction) => {
                 await client.commands.get(interaction.commandName).run(client, interaction, db)
             } catch (error) {
                 console.error(error)
-                return interaction.reply({ content: `There was an error while executing this command!\n\`\`${error}\`\``, ephemeral: true })
+                return interaction.followUp({ content: `There was an error while executing this command!\n\`\`${error}\`\``, ephemeral: true })
             }
         }
     }
@@ -84,7 +84,7 @@ client.on('interactionCreate', async (interaction) => {
                 await client.buttons.get(interaction.customId).run(client, interaction, db)
             } catch (error) {
                 console.error(error)
-                return interaction.reply({ content: `There was an error while executing this button!\n\`\`${error}\`\``, ephemeral: true })
+                return interaction.followUp({ content: `There was an error while executing this button!\n\`\`${error}\`\``, ephemeral: true })
             }
         }
     }
@@ -95,7 +95,7 @@ client.on('interactionCreate', async (interaction) => {
                 await client.contextMenus.get(interaction.commandName).run(client, interaction, db)
             } catch (error) {
                 console.error(error)
-                return interaction.reply({ content: `There was an error while executing this context menu!\n\`\`${error}\`\``, ephemeral: true })
+                return interaction.followUp({ content: `There was an error while executing this context menu!\n\`\`${error}\`\``, ephemeral: true })
             }
         }
     }
