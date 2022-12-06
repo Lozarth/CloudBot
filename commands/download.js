@@ -58,6 +58,10 @@ module.exports = {
 
             // filter audio and video and mp4 format
             const videoInfo = await ytdl.getInfo(url)
+
+            // stop if video is longer than 30 minutes
+            if (videoInfo.videoDetails.lengthSeconds > 1800) return interaction.followUp({ content: 'Video is longer than 30 minutes!', ephemeral: true })
+
             const videoTitle = videoInfo.videoDetails.title
 
             const formats = ytdl.filterFormats(videoInfo.formats, 'audioandvideo', 'mp4')
