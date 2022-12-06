@@ -62,7 +62,7 @@ module.exports = {
                 console.error(error)
                 return interaction.followUp({ content: `There was an error while downloading the video!\n\`\`${error}\`\`` })
             }
-            
+
             if (!tweet.found) return interaction.followUp({ content: 'Tweet not found!' })
 
             if (tweet.type === 'video' || tweet.type === 'video/gif') {
@@ -71,24 +71,25 @@ module.exports = {
                 await interaction.followUp({ content: 'Tweet is not a video or gif!' })
             }
         } else if (platform === 'tiktok') {
-            // tiktok has a fuckton of video urls so i'm not gonna bother with regex
+            // tiktok has a fuckton of video urls so i'm not even gonna bother with regex
 
             await interaction.deferReply()
 
-            const request1 = await axios.post('https://tikfast.net/tik-download/download-link', {
-                0: url
+            // convert shortened url to full url with id
+            const response = await axios.get(url, { maxRedirects: 1 }, { headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.159 Safari/537.36' } })
+        
+            const video = await axios.post('https://tikfast.net/tik-download/download-link', {
+                0: response.request.res.responseUrl
             })
 
-            const videoData = request1.data.data[0].water_free_link
+            const videoUrl = video.data.data[0].water_free_link
 
-            const video = await axios.post('https://tikfast.net/tik-download/download', {
-                url: videoData.toString()
-            })
+            if (videoUrl === '' || videoUrl === null) return interaction.followUp({ content: 'Video not found!' })
 
-            const videoUrl = video.data.data[0].url
-            const videoId = video.data.data[0].vid
+            const videoUrlDecoded = Buffer.from(videoUrl, 'base64').toString('ascii')
+            const randomString = Math.random().toString(36).substring(2, 8)
 
-            await interaction.followUp({ files: [{ attachment: videoUrl, name: `${videoId}.mp4` }] })
+            await interaction.followUp({ files: [{ attachment: videoUrlDecoded, name: `${randomString}.mp4` }] })
         } else if (platform === 'instagram') {
             return interaction.reply({ content: 'Laziest developer ever, this feature is not available yet! If you want this feature added message <@339492485854396426>', ephemeral: true })
         }
