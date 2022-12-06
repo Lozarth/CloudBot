@@ -62,9 +62,9 @@ module.exports = {
 
             const formats = ytdl.filterFormats(videoInfo.formats, 'audioandvideo', 'mp4')
 
-            for (const format of formats) {
+            for (const [index, format] of formats.entries()) {
                 try {
-                    await interaction.followUp({ content: `**${format.width}x${format.height}** | **${format.qualityLabel}** | **${format.fps}fps** | Video Quality: **${format.quality}** | Audio Quality: **${format.audioQuality}**`, files: [{ attachment: format.url, name: `${videoTitle}.mp4` }] })
+                    await interaction.followUp({ content: `${index + 1}/${formats.length}\n**${format.width}x${format.height}** | **${format.qualityLabel}** | **${format.fps}fps** | Video Quality: **${format.quality}** | Audio Quality: **${format.audioQuality}**`, files: [{ attachment: format.url, name: `${videoTitle}.mp4` }] })
                 } catch (error) {
                     console.error(error)
                     await interaction.followUp({ content: `I couldn't send this video!\n\`\`${error}\`\`` })
