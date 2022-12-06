@@ -56,31 +56,20 @@ module.exports = {
 
             await interaction.deferReply()
 
-            const video = ytdl(url, { filter: 'audioandvideo', filterFormat: 'mp4' })
+            // filter audio and video and mp4 format
             const videoInfo = await ytdl.getInfo(url)
             const videoTitle = videoInfo.videoDetails.title
 
-            const fileName = `${videoTitle}.mp4`
+            const formats = ytdl.filterFormats(videoInfo.formats, 'audioandvideo', 'mp4')
 
-            if (videoInfo.videoDetails.lengthSeconds > 1800) return interaction.followUp({ content: 'Video is longer than 30 minutes!' })
-
-            const videoStream = video.pipe(fs.createWriteStream(`./videos/${fileName}`))
-
-            videoStream.on('finish', async () => {
+            for (const format of formats) {
                 try {
-                    await interaction.followUp({ files: [{ attachment: `./videos/${fileName}`, name: fileName }] })
+                    await interaction.followUp({ content: `**${format.width}x${format.height}** | **${format.qualityLabel}** | **${format.fps}fps** | Video Quality: **${format.quality}** | Audio Quality: **${format.audioQuality}**`, files: [{ attachment: format.url, name: `${videoTitle}.mp4` }] })
                 } catch (error) {
                     console.error(error)
-                    return interaction.followUp({ content: `There was an error while sending the video!\n\`\`${error}\`\`` })
-                } finally {
-                    fs.unlinkSync(`./videos/${fileName}`)
+                    await interaction.followUp({ content: `I couldn't send this video!\n\`\`${error}\`\`` })
                 }
-            })
-
-            videoStream.on('error', async (error) => {
-                console.error(error)
-                await interaction.followUp({ content: `There was an error while downloading the video!\n\`\`${error}\`\`` })
-            })
+            }
         } else if (platform === 'twitter') {
             const twitterRegex = /^https?:\/\/(www\.)?twitter\.com\/[a-zA-Z0-9_]+\/status\/[0-9]+/gm
             if (!twitterRegex.test(url)) return interaction.reply({ content: 'Invalid Twitter URL!', ephemeral: true })
