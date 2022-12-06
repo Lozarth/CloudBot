@@ -5,6 +5,39 @@ const fs = require('fs')
 
 module.exports = {
     name: 'download',
+    description: 'Downloads a video from Youtube, Twitter, Tiktok, Instagram',
+    options: [
+        {
+            name: 'url',
+            description: 'The url of the video',
+            type: 3,
+            required: true
+        },
+        {
+            name: 'platform',
+            description: 'The platform of the video',
+            type: 3,
+            required: true,
+            choices: [
+                {
+                    name: 'YouTube',
+                    value: 'youtube'
+                },
+                {
+                    name: 'Twitter',
+                    value: 'twitter'
+                },
+                {
+                    name: 'TikTok',
+                    value: 'tiktok'
+                },
+                {
+                    name: 'Instagram',
+                    value: 'instagram'
+                }
+            ]
+        }
+    ],
     run: async (client, interaction, db) => {
         const url = interaction.options.getString('url')
         const platform = interaction.options.getString('platform')
@@ -77,7 +110,7 @@ module.exports = {
 
             // convert shortened url to full url with id
             const response = await axios.get(url, { maxRedirects: 1 }, { headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.159 Safari/537.36' } })
-        
+
             const video = await axios.post('https://tikfast.net/tik-download/download-link', {
                 0: response.request.res.responseUrl
             })

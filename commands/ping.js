@@ -2,6 +2,8 @@ const { EmbedBuilder } = require('discord.js')
 
 module.exports = {
     name: 'ping',
+    description: 'Shows the bot\'s ping',
+    options: [],
     run: async (client, interaction, db) => {
         const botPing = Date.now() - interaction.createdTimestamp
         const apiPing = client.ws.ping

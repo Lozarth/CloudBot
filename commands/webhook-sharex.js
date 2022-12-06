@@ -1,5 +1,7 @@
 module.exports = {
     name: 'webhook-sharex',
+    description: 'Generates a ShareX webhook config file for your upload channel',
+    options: [],
     run: async (client, interaction, db) => {
         const hasChannel = await db.has(interaction.user.id)
         if (!hasChannel) return interaction.reply({ content: 'You don\'t have an upload channel!', ephemeral: true })

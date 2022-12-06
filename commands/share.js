@@ -1,5 +1,14 @@
 module.exports = {
     name: 'share',
+    description: 'Shares your upload channel with another user',
+    options: [
+        {
+            name: 'user',
+            description: 'User to share the channel with',
+            type: 6,
+            required: true
+        }
+    ],
     run: async (client, interaction, db) => {
         const targetUser = interaction.options.getUser('user')
 

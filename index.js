@@ -8,7 +8,6 @@ const db = new JSONdb('./database.json')
 
 require('dotenv').config()
 
-const slashCommandsJSON = require('./slashcommands.json')
 client.commands = new Collection()
 client.buttons = new Collection()
 client.contextMenus = new Collection()
@@ -17,9 +16,18 @@ const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('
 const buttonFiles = fs.readdirSync('./buttons').filter(file => file.endsWith('.js'))
 const contextMenuFiles = fs.readdirSync('./contextmenus').filter(file => file.endsWith('.js'))
 
+const slashCommandsJSON = []
+
 for (const file of commandFiles) {
     const command = require(`./commands/${file}`)
     client.commands.set(command.name, command)
+
+    // add command to json array
+    slashCommandsJSON.push({
+        name: command.name,
+        description: command.description,
+        options: command.options
+    })
 }
 
 for (const file of buttonFiles) {
