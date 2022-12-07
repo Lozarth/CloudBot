@@ -56,19 +56,17 @@ module.exports = {
 
             await interaction.deferReply()
 
-            // filter audio and video and mp4 format
             const videoInfo = await ytdl.getInfo(url)
 
             // stop if video is longer than 30 minutes
-            if (videoInfo.videoDetails.lengthSeconds > 1800) return interaction.followUp({ content: 'Video is longer than 30 minutes!', ephemeral: true })
+            if (videoInfo.videoDetails.lengthSeconds > 1800) return interaction.followUp({ content: 'Video is longer than 30 minutes!' })
 
+            const formats = ytdl.filterFormats(videoInfo.formats, 'audioandvideo')
             const videoTitle = videoInfo.videoDetails.title
-
-            const formats = ytdl.filterFormats(videoInfo.formats, 'audioandvideo', 'mp4')
 
             for (const [index, format] of formats.entries()) {
                 try {
-                    await interaction.followUp({ content: `${index + 1}/${formats.length}\n**${format.width}x${format.height}** | **${format.qualityLabel}** | **${format.fps}fps** | Video Quality: **${format.quality}** | Audio Quality: **${format.audioQuality}**`, files: [{ attachment: format.url, name: `${videoTitle}.mp4` }] })
+                    await interaction.followUp({ content: `${index + 1}/${formats.length}\n**${format.width}x${format.height}** | **${format.qualityLabel}** | **${format.fps}fps** | Video Quality: **${format.quality}** | Audio Quality: **${format.audioQuality}**`, files: [{ attachment: format.url, name: `${videoTitle}.${format.container}` }] })
                 } catch (error) {
                     console.error(error)
                     await interaction.followUp({ content: `I couldn't send this video!\n\`\`${error}\`\`` })
@@ -91,10 +89,15 @@ module.exports = {
 
             if (!tweet.found) return interaction.followUp({ content: 'Tweet not found!' })
 
-            if (tweet.type === 'video' || tweet.type === 'video/gif') {
-                await interaction.followUp({ files: [{ attachment: tweet.download[0].url }] })
-            } else {
-                await interaction.followUp({ content: 'Tweet is not a video or gif!' })
+            if (!(tweet.type === 'video' || tweet.type === 'video/gif')) return interaction.followUp({ content: 'Tweet is not a video or gif!' })
+
+            for (const [index, video] of tweet.download.entries()) {
+                try {
+                    await interaction.followUp({ content: `${index + 1}/${tweet.download.length}\n**${video.dimension}**`, files: [{ attachment: video.url }] })
+                } catch (error) {
+                    console.error(error)
+                    await interaction.followUp({ content: `I couldn't send this video!\n\`\`${error}\`\`` })
+                }
             }
         } else if (platform === 'tiktok') {
             // tiktok has a fuckton of video urls so i'm not even gonna bother with regex
