@@ -7,15 +7,15 @@ module.exports = {
 
         if (!interaction.member.roles.cache.has('1041858413816205312')) return interaction.reply({ content: 'Please read and accept the rules before creating a channel!\n<#1041857262567833640>', ephemeral: true })
 
-        const hasChannel = await db.has(interaction.user.id)
+        const hasChannel = db.has(interaction.user.id)
         if (hasChannel) {
-            const channelId = await db.get(interaction.user.id)
+            const channelId = db.get(interaction.user.id)
             const channel = await client.channels.fetch(channelId)
             await channel.permissionOverwrites.create(interaction.user.id, {
                 ViewChannel: true
             })
             
-            return interaction.reply({ content: 'You already have a channel!', ephemeral: true })
+            return interaction.reply({ content: `You already have a channel!\n<#${channelId}>`, ephemeral: true })
         }
 
         const channel = await guild.channels.create({
@@ -64,8 +64,8 @@ module.exports = {
             await wlc.pin()
         }
 
-        await db.set(interaction.user.id, channel.id)
-        await db.set(channel.id, interaction.user.id)
+        db.set(interaction.user.id, channel.id)
+        db.set(channel.id, interaction.user.id)
 
         console.log(`Created personal channel for ${interaction.user.username}`)
 

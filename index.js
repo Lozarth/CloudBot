@@ -58,8 +58,8 @@ client.on('ready', async () => {
     client.user.setActivity('in the clouds', { type: ActivityType.Playing })
 
     // check if database has pending bump reminders
-    const dbJSON = await db.JSON()
-    
+    const dbJSON = db.JSON()
+
     for (const [key, value] of Object.entries(dbJSON)) {
         if (key.startsWith('bump_')) {
             const userId = key.split('_')[1]
@@ -68,7 +68,7 @@ client.on('ready', async () => {
 
             setTimeout(async () => {
                 await channel.send({ content: `<@${userId}>, You can bump again!` })
-                await db.delete(`bump_${userId}`)
+                db.delete(`bump_${userId}`)
             }, timeRemaining)
         }
     }
@@ -110,16 +110,17 @@ client.on('interactionCreate', async (interaction) => {
 })
 
 client.on('messageCreate', async (message) => {
-    if (message.type === MessageType.ChatInputCommand && message.channelId === '1041869163301445662' && message.interaction.commandName === 'bump' && message.author.id === '302050872383242240') {
+    // check if command is /bump, a chat input command, is in the bump channel, and is from the disboard bot
+    if (message.interaction.commandName === 'bump' && message.type === MessageType.ChatInputCommand && message.channelId === '1041869163301445662' && message.author.id === '302050872383242240') {
         console.log(`${message.interaction.user.username} bumped the server!`)
         await message.channel.send({ content: `<@${message.interaction.user.id}>, Thanks for bumping the server! I will ping you again in 2 hours when you can bump again.\nTimer: <t:${Math.floor(Date.now() / 1000) + 7200}:R>` })
 
         // persist timeout after restart
-        await db.set(`bump_${message.interaction.user.id}`, Date.now() + 7200000)
+        db.set(`bump_${message.interaction.user.id}`, Date.now() + 7200000)
 
         setTimeout(async () => {
             await message.channel.send({ content: `<@${message.interaction.user.id}>, You can bump again!` })
-            await db.delete(`bump_${message.interaction.user.id}`)
+            db.delete(`bump_${message.interaction.user.id}`)
         }, 7200000)
     }
 })
@@ -131,22 +132,22 @@ client.on('guildMemberAdd', async (member) => {
 client.on('guildMemberRemove', async (member) => {
     console.log(`${member.user.username} left the server!`)
 
-    const hasUploadChannel = await db.has(member.user.id)
-    if (hasUploadChannel) {
-        const uploadChannelId = await db.get(member.user.id)
-        const channel = await client.channels.fetch(uploadChannelId)
-        const messages = await channel.messages.fetch({ limit: 100 })
+    const hasChannel = db.has(member.user.id)
+    if (!hasChannel) return
 
-        const userMessages = messages.filter(message => message.author.id === member.user.id)
+    const channelId = db.get(member.user.id)
+    const channel = await client.channels.fetch(channelId)
+    const messages = await channel.messages.fetch({ limit: 100 })
 
-        if (userMessages.size === 0) {
-            await db.delete(member.user.id)
-            await db.delete(channel.id)
+    const userMessages = messages.filter(message => message.author.id === member.user.id)
 
-            console.log(`Deleted upload channel for ${member.user.username} because they left and didn't upload anything.`)
+    if (userMessages.size === 0) {
+        db.delete(member.user.id)
+        db.delete(channel.id)
 
-            return channel.delete()
-        }
+        console.log(`Deleted ${member.user.username}'s channel because they left and didn't upload anything.`)
+
+        return channel.delete()
     }
 })
 

@@ -42,10 +42,10 @@ module.exports = {
         const url = interaction.options.getString('url')
         const platform = interaction.options.getString('platform')
 
-        const hasChannel = await db.has(interaction.user.id)
-        if (!hasChannel) return interaction.reply({ content: 'You don\'t have an upload channel!', ephemeral: true })
+        const hasChannel = db.has(interaction.user.id)
+        if (!hasChannel) return interaction.reply({ content: `You don't have an upload channel!\n<#1041848988158148639>`, ephemeral: true })
 
-        const channelId = await db.get(interaction.user.id)
+        const channelId = db.get(interaction.user.id)
 
         if (interaction.channel.id !== channelId) return interaction.reply({ content: 'You can only use this command in your upload channel!', ephemeral: true })
 
