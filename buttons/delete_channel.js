@@ -3,8 +3,8 @@ const { ButtonStyle, ActionRowBuilder, ButtonBuilder } = require('discord.js')
 module.exports = {
     name: 'delete_channel',
     run: async (client, interaction, db) => {
-        const ownedChannelId = await db.get(interaction.user.id)
-        if (ownedChannelId !== interaction.channel.id) return interaction.reply({ content: 'Only the owner can delete this channel!', ephemeral: true })
+        const channelId = db.get(interaction.user.id)
+        if (channelId !== interaction.channel.id) return interaction.reply({ content: 'Only the owner can delete this channel!', ephemeral: true })
 
         const row = new ActionRowBuilder()
             .addComponents(
