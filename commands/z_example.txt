@@ -1,0 +1,8 @@
+module.exports = {
+    name: 'name',
+    description: 'description',
+    options: [],
+    run: async (client, interaction, db) => {
+        
+    }
+}
