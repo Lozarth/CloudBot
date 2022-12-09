@@ -1,9 +1,9 @@
-const { EmbedBuilder } = require('discord.js')
+const { SlashCommandBuilder, EmbedBuilder } = require('discord.js')
 
 module.exports = {
-    name: 'ping',
-    description: 'Shows the bot\'s ping',
-    options: [],
+    data: new SlashCommandBuilder()
+        .setName('ping')
+        .setDescription('Get the bot\'s ping'),
     run: async (client, interaction, db) => {
         const botPing = Date.now() - interaction.createdTimestamp
         const apiPing = client.ws.ping

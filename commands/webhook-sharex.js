@@ -1,7 +1,9 @@
+const { SlashCommandBuilder } = require('discord.js')
+
 module.exports = {
-    name: 'webhook-sharex',
-    description: 'Generates a ShareX webhook config file for your upload channel',
-    options: [],
+    data: new SlashCommandBuilder()
+        .setName('webhook-sharex')
+        .setDescription('Generate a ShareX config for your upload channel'),
     run: async (client, interaction, db) => {
         const hasChannel = db.has(interaction.user.id) 
         if (!hasChannel) return interaction.reply({ content: `You don't have an upload channel!\n<#1041848988158148639>`, ephemeral: true })

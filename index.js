@@ -23,11 +23,7 @@ for (const file of commandFiles) {
     client.commands.set(command.name, command)
 
     // add command to json array
-    slashCommandsJSON.push({
-        name: command.name,
-        description: command.description,
-        options: command.options
-    })
+    slashCommandsJSON.push(command.data.toJSON())
 }
 
 for (const file of buttonFiles) {

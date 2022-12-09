@@ -1,43 +1,28 @@
+const { SlashCommandBuilder } = require('discord.js')
+
 const ytdl = require('ytdl-core')
 const axios = require('axios')
 const twitter = require('twitter-url-direct')
-const fs = require('fs')
 
 module.exports = {
-    name: 'download',
-    description: 'Downloads a video from Youtube, Twitter, Tiktok, Instagram',
-    options: [
-        {
-            name: 'url',
-            description: 'The url of the video',
-            type: 3,
-            required: true
-        },
-        {
-            name: 'platform',
-            description: 'The platform of the video',
-            type: 3,
-            required: true,
-            choices: [
-                {
-                    name: 'YouTube',
-                    value: 'youtube'
-                },
-                {
-                    name: 'Twitter',
-                    value: 'twitter'
-                },
-                {
-                    name: 'TikTok',
-                    value: 'tiktok'
-                },
-                {
-                    name: 'Instagram',
-                    value: 'instagram'
-                }
-            ]
-        }
-    ],
+    data: new SlashCommandBuilder()
+        .setName('download')
+        .setDescription('Downloads a video from Youtube, Twitter, Tiktok, Reddit, Instagram')
+        .addStringOption(option =>
+            option.setName('url')
+                .setDescription('The link of the video')
+                .setRequired(true)
+        )
+        .addStringOption(option =>
+            option.setName('platform')
+                .setDescription('The platform of the video')
+                .addChoice('Youtube', 'youtube')
+                .addChoice('Twitter', 'twitter')
+                .addChoice('Tiktok', 'tiktok')
+                .addChoice('Reddit', 'reddit')
+                .addChoice('Instagram', 'instagram')
+                .setRequired(true),
+        ),
     run: async (client, interaction, db) => {
         const url = interaction.options.getString('url')
         const platform = interaction.options.getString('platform')
@@ -120,6 +105,8 @@ module.exports = {
 
             await interaction.followUp({ files: [{ attachment: videoUrlDecoded, name: `${randomString}.mp4` }] })
         } else if (platform === 'instagram') {
+            return interaction.reply({ content: 'Laziest developer ever, this feature is not available yet! If you want this feature added message <@339492485854396426>', ephemeral: true })
+        } else if (platform === 'reddit') {
             return interaction.reply({ content: 'Laziest developer ever, this feature is not available yet! If you want this feature added message <@339492485854396426>', ephemeral: true })
         }
     }

@@ -1,14 +1,14 @@
+const { SlashCommandBuilder } = require('discord.js')
+
 module.exports = {
-    name: 'share',
-    description: 'Shares your upload channel with another user',
-    options: [
-        {
-            name: 'user',
-            description: 'User to share the channel with',
-            type: 6,
-            required: true
-        }
-    ],
+    data: new SlashCommandBuilder()
+        .setName('share')
+        .setDescription('Share your upload channel with another user')
+        .addUserOption(option =>
+            option.setName('user')
+                .setDescription('The user to share with')
+                .setRequired(true)
+        ),
     run: async (client, interaction, db) => {
         const targetUser = interaction.options.getUser('user')
 

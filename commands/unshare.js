@@ -1,14 +1,14 @@
+const { SlashCommandBuilder } = require('discord.js')
+
 module.exports = {
-    name: 'unshare',
-    description: 'Unshares your upload channel with another user',
-    options: [
-        {
-            name: 'user',
-            description: 'User to unshare the channel with',
-            type: 6,
-            required: true
-        }
-    ],
+    data: new SlashCommandBuilder()
+        .setName('unshare')
+        .setDescription('Unshare your upload channel with another user')
+        .addUserOption(option =>
+            option.setName('user')
+                .setDescription('The user to unshare with')
+                .setRequired(true)
+        ),
     run: async (client, interaction, db) => {
         const targetUser = interaction.options.getUser('user')
 
