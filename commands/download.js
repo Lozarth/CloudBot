@@ -16,11 +16,13 @@ module.exports = {
         .addStringOption(option =>
             option.setName('platform')
                 .setDescription('The platform of the video')
-                .addChoice('Youtube', 'youtube')
-                .addChoice('Twitter', 'twitter')
-                .addChoice('Tiktok', 'tiktok')
-                .addChoice('Reddit', 'reddit')
-                .addChoice('Instagram', 'instagram')
+                .addChoices([
+                    ['Youtube', 'youtube'],
+                    ['Twitter', 'twitter'],
+                    ['Tiktok', 'tiktok'],
+                    ['Reddit', 'reddit'],
+                    ['Instagram', 'instagram']
+                ])
                 .setRequired(true),
         ),
     run: async (client, interaction, db) => {
