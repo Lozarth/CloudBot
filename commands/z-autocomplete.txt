@@ -14,24 +14,17 @@ module.exports = {
     run: async (client, interaction, db) => {
         const input = interaction.options.getString('input')
 
-        return interaction.reply({ content: `https://www.google.com/search?q=${input}`, ephemeral: true })
+        return interaction.reply({ content: input, ephemeral: true })
     },
     autocomplete: async (client, interaction, db) => {
         const focusedValue = interaction.options.getFocused()
+        if (focusedValue.length === 0) return interaction.respond([])
+
         const google = await axios.get(`https://suggestqueries.google.com/complete/search?client=firefox&q=${focusedValue}`)
         const suggestions = google.data[1]
 
-        await interaction.respond({
-            type: 8,
-            data: {
-                choices: suggestions.map(suggestion => {
-                    return {
-                        name: suggestion,
-                        value: suggestion
-                    }
-                }
-                )
-            },
-        })
+        await interaction.respond(
+            suggestions.map(suggestion => ({ name: suggestion, value: suggestion }))
+        )
     }
 }

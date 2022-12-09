@@ -20,7 +20,7 @@ const slashCommandsJSON = []
 
 for (const file of commandFiles) {
     const command = require(`./commands/${file}`)
-    client.commands.set(command.name, command)
+    client.commands.set(command.data.name, command)
 
     // add command to json array
     slashCommandsJSON.push(command.data.toJSON())
@@ -100,6 +100,17 @@ client.on('interactionCreate', async (interaction) => {
             } catch (error) {
                 console.error(error)
                 return interaction.followUp({ content: `There was an error while executing this context menu!\n\`\`${error}\`\``, ephemeral: true })
+            }
+        }
+    }
+
+    if (interaction.isAutocomplete()) {
+        if (client.commands.get(interaction.commandName)) {
+            try {
+                await client.commands.get(interaction.commandName).autocomplete(client, interaction, db)
+            } catch (error) {
+                console.error(error)
+                return interaction.followUp({ content: `There was an error while executing this autocomplete!\n\`\`${error}\`\``, ephemeral: true })
             }
         }
     }
