@@ -103,24 +103,13 @@ client.on('interactionCreate', async (interaction) => {
             }
         }
     }
-
-    if (interaction.isAutocomplete()) {
-        if (client.commands.get(interaction.commandName)) {
-            try {
-                await client.commands.get(interaction.commandName).autocomplete(client, interaction, db)
-            } catch (error) {
-                console.error(error)
-                return interaction.followUp({ content: `There was an error while executing this autocomplete!\n\`\`${error}\`\``, ephemeral: true })
-            }
-        }
-    }
 })
 
 client.on('messageCreate', async (message) => {
     // check if command is /bump, a chat input command, is in the bump channel, and is from the disboard bot
-    if (message.interaction.commandName === 'bump' && message.type === MessageType.ChatInputCommand && message.channelId === '1041869163301445662' && message.author.id === '302050872383242240') {
+    if (message.type === MessageType.ChatInputCommand && message.interaction.commandName === 'bump' && message.channelId === '1041869163301445662' && message.author.id === '302050872383242240') {
         console.log(`${message.interaction.user.username} bumped the server!`)
-        await message.channel.send({ content: `<@${message.interaction.user.id}>, Thanks for bumping the server! I will ping you again in 2 hours when you can bump again.\nTimer: <t:${Math.floor(Date.now() / 1000) + 7200}:R>` })
+        await message.channel.send({ content: `<@${message.interaction.user.id}>, Thanks for bumping the server! I will ping you again <t:${Math.floor(Date.now() / 1000) + 7200}:R> when you can bump again.` })
 
         // persist timeout after restart
         db.set(`bump_${message.interaction.user.id}`, Date.now() + 7200000)
