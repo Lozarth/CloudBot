@@ -3,6 +3,7 @@ const { SlashCommandBuilder } = require('discord.js')
 const ytdl = require('ytdl-core')
 const axios = require('axios')
 const twitter = require('twitter-url-direct')
+const { parseString } = require('xml2js')
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -124,12 +125,18 @@ module.exports = {
             const redditPost = await axios.get(`${urlNoQuery}.json`, { headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.159 Safari/537.36' } })
 
             const videoTitle = redditPost.data[0].data.children[0].data.title
+            const permalink = `https://reddit.com${redditPost.data[0].data.children[0].data.permalink}`
             const videoUrl = redditPost.data[0].data.children[0].data.media.reddit_video.fallback_url
+            const xmlData = await axios.get(redditPost.data[0].data.children[0].data.media.reddit_video.dash_url)
+            const xml = xmlData.data
+
+            const audioName = xml.split('<BaseURL>')[1].split('</BaseURL>')[0]
+            const audioUrl = videoUrl.replace(/DASH_.*?\.mp4/g, audioName)
 
             if (videoUrl === '' || videoUrl === null) return interaction.followUp({ content: 'Video not found!' })
 
             try {
-                await interaction.followUp({ files: [{ attachment: videoUrl, name: `${videoTitle}.mp4` }] })
+                await interaction.followUp({ files: [{ attachment: `https://sd.redditsave.com/download.php?permalink=${permalink}/&video_url=${videoUrl}&audio_url=${audioUrl}`, name: `${videoTitle}.mp4` }] })
             } catch (error) {
                 console.error(error)
                 await interaction.followUp({ content: `I couldn't send this video!\n\`\`${error}\`\`` })
