@@ -105,11 +105,35 @@ module.exports = {
             const videoUrlDecoded = Buffer.from(videoUrl, 'base64').toString('ascii')
             const randomString = Math.random().toString(36).substring(2, 8)
 
-            await interaction.followUp({ files: [{ attachment: videoUrlDecoded, name: `${randomString}.mp4` }] })
+            try {
+                await interaction.followUp({ files: [{ attachment: videoUrlDecoded, name: `${randomString}.mp4` }] })
+            } catch (error) {
+                console.error(error)
+                await interaction.followUp({ content: `I couldn't send this video!\n\`\`${error}\`\`` })
+            }
         } else if (platform === 'instagram') {
             return interaction.reply({ content: 'Laziest developer ever, this feature is not available yet! If you want this feature added message <@339492485854396426>', ephemeral: true })
         } else if (platform === 'reddit') {
-            return interaction.reply({ content: 'Laziest developer ever, this feature is not available yet! If you want this feature added message <@339492485854396426>', ephemeral: true })
+            const urlNoQuery = url.split('?')[0]
+
+            const redditRegex = /^https?:\/\/(www\.)?reddit\.com\/r\/[a-zA-Z0-9_]+\/comments\/[a-zA-Z0-9_]+\/[a-zA-Z0-9_]+/gm
+            if (!redditRegex.test(urlNoQuery)) return interaction.reply({ content: 'Invalid Reddit URL!', ephemeral: true })
+
+            await interaction.deferReply()
+
+            const redditPost = await axios.get(`${urlNoQuery}.json`, { headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.159 Safari/537.36' } })
+
+            const videoTitle = redditPost.data[0].data.children[0].data.title
+            const videoUrl = redditPost.data[0].data.children[0].data.media.reddit_video.fallback_url
+
+            if (videoUrl === '' || videoUrl === null) return interaction.followUp({ content: 'Video not found!' })
+
+            try {
+                await interaction.followUp({ files: [{ attachment: videoUrl, name: `${videoTitle}.mp4` }] })
+            } catch (error) {
+                console.error(error)
+                await interaction.followUp({ content: `I couldn't send this video!\n\`\`${error}\`\`` })
+            }
         }
     }
 }
