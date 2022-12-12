@@ -1,16 +1,16 @@
+require('dotenv').config()
+
 const { Client, GatewayIntentBits, MessageType, ActivityType, Collection, REST, Routes, ButtonStyle, EmbedBuilder, ActionRowBuilder, ButtonBuilder } = require('discord.js')
 const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.GuildMembers] })
-
-const fs = require('fs')
 
 const JSONdb = require('simple-json-db')
 const db = new JSONdb('./database.json')
 
-require('dotenv').config()
-
 client.commands = new Collection()
 client.buttons = new Collection()
 client.contextMenus = new Collection()
+
+const fs = require('fs')
 
 const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'))
 const buttonFiles = fs.readdirSync('./buttons').filter(file => file.endsWith('.js'))
