@@ -3,7 +3,6 @@ const { SlashCommandBuilder } = require('discord.js')
 const ytdl = require('ytdl-core')
 const axios = require('axios')
 const twitter = require('twitter-url-direct')
-const { parseString } = require('xml2js')
 
 module.exports = {
     data: new SlashCommandBuilder()
