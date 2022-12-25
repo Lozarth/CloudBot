@@ -24,6 +24,15 @@ module.exports = {
                     { name: 'Instagram', value: 'instagram' }
                 )
                 .setRequired(true),
+        )
+        .addStringOption(option => 
+            option.setName('sendasfile')
+                .setDescription('Whether to send the video as a file or not. If not, it will send the video as a link. This an option because of Discord\'s file size limit.')
+                .addChoices(
+                    { name: 'Yes', value: 'yes' },
+                    { name: 'No', value: 'no' }
+                )
+                .setRequired(true)
         ),
     run: async (client, interaction, db) => {
         const url = interaction.options.getString('url')
@@ -36,6 +45,8 @@ module.exports = {
 
         if (interaction.channel.id !== channelId) return interaction.reply({ content: 'You can only use this command in your upload channel!', ephemeral: true })
 
+        const sendasfile = interaction.options.getString('sendasfile')
+
         if (platform === 'youtube') {
             const videoRegex = /^((?:https?:)?\/\/)?((?:www|m)\.)?((?:youtube\.com|youtu.be))(\/(?:[\w\-]+\?v=|embed\/|v\/)?)([\w\-]+)(\S+)?$/gm
             if (!videoRegex.test(url)) return interaction.reply({ content: 'Invalid YouTube URL!', ephemeral: true })
@@ -45,14 +56,18 @@ module.exports = {
             const videoInfo = await ytdl.getInfo(url)
 
             // stop if video is longer than 30 minutes
-            if (videoInfo.videoDetails.lengthSeconds > 1800) return interaction.followUp({ content: 'Video is longer than 30 minutes!' })
+            if (videoInfo.videoDetails.lengthSeconds > 1800 && interaction.options.getString('sendasfile') === 'yes') return interaction.followUp({ content: 'Video is longer than 30 minutes!' })
 
             const formats = ytdl.filterFormats(videoInfo.formats, 'audioandvideo')
             const videoTitle = videoInfo.videoDetails.title
 
             for (const [index, format] of formats.entries()) {
                 try {
-                    await interaction.followUp({ content: `${index + 1}/${formats.length}\n**${format.width}x${format.height}** | **${format.qualityLabel}** | **${format.fps}fps** | Video Quality: **${format.quality}** | Audio Quality: **${format.audioQuality}** | File Size: **${format.contentLength / 1000000}mb**`, files: [{ attachment: format.url, name: `${videoTitle}.${format.container}` }] })
+                    if (sendasfile === 'yes') {
+                        await interaction.followUp({ content: `${index + 1}/${formats.length}\n**${format.width}x${format.height}** | **${format.qualityLabel}** | **${format.fps}fps** | Video Quality: **${format.quality}** | Audio Quality: **${format.audioQuality}** | File Size: **${format.contentLength / 1000000}mb**`, files: [{ attachment: format.url, name: `${videoTitle}.${format.container}` }] })
+                    } else {
+                        await interaction.followUp({ content: `${index + 1}/${formats.length}\n**${format.width}x${format.height}** | **${format.qualityLabel}** | **${format.fps}fps** | Video Quality: **${format.quality}** | Audio Quality: **${format.audioQuality}** | File Size: **${format.contentLength / 1000000}mb**\n${format.url}` })
+                    }
                 } catch (error) {
                     console.error(error)
                     await interaction.followUp({ content: `I couldn't send this video!\n\`\`${error}\`\`` })
@@ -79,7 +94,11 @@ module.exports = {
 
             for (const [index, video] of tweet.download.entries()) {
                 try {
-                    await interaction.followUp({ content: `${index + 1}/${tweet.download.length}\n**${video.dimension}**`, files: [{ attachment: video.url }] })
+                    if (sendasfile === 'yes') {
+                        await interaction.followUp({ content: `${index + 1}/${tweet.download.length}\n**${video.dimension}**`, files: [{ attachment: video.url }] })
+                    } else {
+                        await interaction.followUp({ content: `${index + 1}/${tweet.download.length}\n**${video.dimension}**\n${video.url}` })
+                    }
                 } catch (error) {
                     console.error(error)
                     await interaction.followUp({ content: `I couldn't send this video!\n\`\`${error}\`\`` })
@@ -105,7 +124,11 @@ module.exports = {
             const randomString = Math.random().toString(36).substring(2, 8)
 
             try {
-                await interaction.followUp({ files: [{ attachment: videoUrlDecoded, name: `${randomString}.mp4` }] })
+                if (sendasfile === 'yes') {
+                    await interaction.followUp({ files: [{ attachment: videoUrlDecoded, name: `${randomString}.mp4` }] })
+                } else {
+                    await interaction.followUp({ content: videoUrlDecoded })
+                }
             } catch (error) {
                 console.error(error)
                 await interaction.followUp({ content: `I couldn't send this video!\n\`\`${error}\`\`` })
@@ -134,7 +157,11 @@ module.exports = {
             if (videoUrl === '' || videoUrl === null) return interaction.followUp({ content: 'Video not found!' })
 
             try {
-                await interaction.followUp({ files: [{ attachment: `https://sd.redditsave.com/download.php?permalink=${permalink}/&video_url=${videoUrl}&audio_url=${audioUrl}`, name: `${videoTitle}.mp4` }] })
+                if (sendasfile === 'yes') {
+                    await interaction.followUp({ files: [{ attachment: `https://sd.redditsave.com/download.php?permalink=${permalink}/&video_url=${videoUrl}&audio_url=${audioUrl}`, name: `${videoTitle}.mp4` }] })
+                } else {
+                    await interaction.followUp({ content: `https://sd.redditsave.com/download.php?permalink=${permalink}/&video_url=${videoUrl}&audio_url=${audioUrl}` })
+                }
             } catch (error) {
                 console.error(error)
                 await interaction.followUp({ content: `I couldn't send this video!\n\`\`${error}\`\`` })
