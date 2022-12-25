@@ -27,7 +27,7 @@ module.exports = {
         )
         .addStringOption(option => 
             option.setName('sendasfile')
-                .setDescription('Whether to send the video as a file or not. If not, it will send the video as a link. This an option because of Discord\'s file size limit.')
+                .setDescription('Send the video as a file or link. Links will bypass file size limit but will be deleted soon after.')
                 .addChoices(
                     { name: 'Yes', value: 'yes' },
                     { name: 'No', value: 'no' }
