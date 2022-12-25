@@ -60,17 +60,18 @@ module.exports = {
 
             const formats = ytdl.filterFormats(videoInfo.formats, 'audioandvideo')
             const videoTitle = videoInfo.videoDetails.title
-
+            
             for (const [index, format] of formats.entries()) {
                 try {
                     if (sendasfile === 'yes') {
-                        await interaction.followUp({ content: `${index + 1}/${formats.length}\n**${format.width}x${format.height}** | **${format.qualityLabel}** | **${format.fps}fps** | Video Quality: **${format.quality}** | Audio Quality: **${format.audioQuality}** | File Size: **${format.contentLength / 1000000}mb**`, files: [{ attachment: format.url, name: `${videoTitle}.${format.container}` }] })
+                        await interaction.followUp({ content: `${index + 1}/${formats.length}\n**${format.width}x${format.height}** | **${format.qualityLabel}** | **${format.fps}fps** | Video Quality: **${format.quality}** | Audio Quality: **${format.audioQuality}**`, files: [{ attachment: format.url, name: `${videoTitle}.${format.container}` }] })
                     } else {
                         const embed = new EmbedBuilder()
                             .setTitle('Click here to download the video')
                             .setURL(format.url)
+                            .setDescription(`Expires <t:${format.url.split('expire=').pop().split('&')[0]}:R>`)
                             .setColor('#2f3136')
-                        await interaction.followUp({ content: `${index + 1}/${formats.length}\n**${format.width}x${format.height}** | **${format.qualityLabel}** | **${format.fps}fps** | Video Quality: **${format.quality}** | Audio Quality: **${format.audioQuality}** | File Size: **${format.contentLength / 1000000}mb**`, embeds: [embed] })
+                        await interaction.followUp({ content: `${index + 1}/${formats.length}\n**${format.width}x${format.height}** | **${format.qualityLabel}** | **${format.fps}fps** | Video Quality: **${format.quality}** | Audio Quality: **${format.audioQuality}**`, embeds: [embed] })
                     }
                 } catch (error) {
                     console.error(error)
