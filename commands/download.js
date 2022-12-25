@@ -32,7 +32,7 @@ module.exports = {
                     { name: 'Yes', value: 'yes' },
                     { name: 'No', value: 'no' }
                 )
-                .setRequired(true)
+                .setRequired(false)
         ),
     run: async (client, interaction, db) => {
         const url = interaction.options.getString('url')
@@ -45,7 +45,7 @@ module.exports = {
 
         if (interaction.channel.id !== channelId) return interaction.reply({ content: 'You can only use this command in your upload channel!', ephemeral: true })
 
-        const sendasfile = interaction.options.getString('sendasfile')
+        const sendasfile = interaction.options.getString('sendasfile') || 'no'
 
         if (platform === 'youtube') {
             const videoRegex = /^((?:https?:)?\/\/)?((?:www|m)\.)?((?:youtube\.com|youtu.be))(\/(?:[\w\-]+\?v=|embed\/|v\/)?)([\w\-]+)(\S+)?$/gm
