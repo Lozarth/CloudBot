@@ -1,3 +1,4 @@
 # Sensitive or useless files
 .env
 embeds.txt
+node_modules

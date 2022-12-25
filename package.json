@@ -1,0 +1,26 @@
+{
+  "name": "cloud-bot",
+  "version": "1.0.0",
+  "description": "A bot for managing my Discord file hosting server.",
+  "main": "index.js",
+  "author": "shrigma#1957",
+  "dependencies": {
+    "discord.js": "14.7.1",
+    "simple-json-db": "2.0.0",
+    "dotenv": "16.0.3",
+    "ytdl-core": "4.11.2",
+    "axios": "1.2.1",
+    "twitter-url-direct": "1.0.8"
+  },
+  "scripts": {
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Lozarth/CloudBot.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Lozarth/CloudBot/issues"
+  }
+}
