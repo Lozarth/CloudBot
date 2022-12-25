@@ -1,4 +1,4 @@
-const { SlashCommandBuilder } = require('discord.js')
+const { SlashCommandBuilder, EmbedBuilder } = require('discord.js')
 
 const ytdl = require('ytdl-core')
 const axios = require('axios')
@@ -66,7 +66,11 @@ module.exports = {
                     if (sendasfile === 'yes') {
                         await interaction.followUp({ content: `${index + 1}/${formats.length}\n**${format.width}x${format.height}** | **${format.qualityLabel}** | **${format.fps}fps** | Video Quality: **${format.quality}** | Audio Quality: **${format.audioQuality}** | File Size: **${format.contentLength / 1000000}mb**`, files: [{ attachment: format.url, name: `${videoTitle}.${format.container}` }] })
                     } else {
-                        await interaction.followUp({ content: `${index + 1}/${formats.length}\n**${format.width}x${format.height}** | **${format.qualityLabel}** | **${format.fps}fps** | Video Quality: **${format.quality}** | Audio Quality: **${format.audioQuality}** | File Size: **${format.contentLength / 1000000}mb**\n${format.url}` })
+                        const embed = new EmbedBuilder()
+                            .setTitle('Click here to download the video')
+                            .setURL(format.url)
+                            .setColor('#2f3136')
+                        await interaction.followUp({ content: `${index + 1}/${formats.length}\n**${format.width}x${format.height}** | **${format.qualityLabel}** | **${format.fps}fps** | Video Quality: **${format.quality}** | Audio Quality: **${format.audioQuality}** | File Size: **${format.contentLength / 1000000}mb**`, embeds: [embed] })
                     }
                 } catch (error) {
                     console.error(error)
