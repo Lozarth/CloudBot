@@ -27,12 +27,12 @@ module.exports = {
         )
         .addStringOption(option => 
             option.setName('sendasfile')
-                .setDescription('Send the video as a file or link. Links will bypass file size limit but will be deleted soon after.')
+                .setDescription('Send video as a file or link. Links will bypass file size limit.')
                 .addChoices(
-                    { name: 'Yes', value: 'yes' },
-                    { name: 'No', value: 'no' }
+                    { name: 'Send as file', value: 'yes' },
+                    { name: 'Send as link', value: 'no' }
                 )
-                .setRequired(false)
+                .setRequired(true)
         ),
     run: async (client, interaction, db) => {
         const url = interaction.options.getString('url')
@@ -45,7 +45,7 @@ module.exports = {
 
         if (interaction.channel.id !== channelId) return interaction.reply({ content: 'You can only use this command in your upload channel!', ephemeral: true })
 
-        const sendasfile = interaction.options.getString('sendasfile') || 'no'
+        const sendasfile = interaction.options.getString('sendasfile')
 
         if (platform === 'youtube') {
             const videoRegex = /^((?:https?:)?\/\/)?((?:www|m)\.)?((?:youtube\.com|youtu.be))(\/(?:[\w\-]+\?v=|embed\/|v\/)?)([\w\-]+)(\S+)?$/gm
