@@ -66,12 +66,7 @@ module.exports = {
                     if (sendasfile === 'yes') {
                         await interaction.followUp({ content: `${index + 1}/${formats.length}\n**${format.width}x${format.height}** | **${format.qualityLabel}** | **${format.fps}fps** | Video Quality: **${format.quality}** | Audio Quality: **${format.audioQuality}**`, files: [{ attachment: format.url, name: `${videoTitle}.${format.container}` }] })
                     } else {
-                        const embed = new EmbedBuilder()
-                            .setTitle('Click here to download the video')
-                            .setURL(format.url)
-                            .setDescription(`Expires <t:${format.url.split('expire=').pop().split('&')[0]}:R>`)
-                            .setColor('#2f3136')
-                        await interaction.followUp({ content: `${index + 1}/${formats.length}\n**${format.width}x${format.height}** | **${format.qualityLabel}** | **${format.fps}fps** | Video Quality: **${format.quality}** | Audio Quality: **${format.audioQuality}**`, embeds: [embed] })
+                        await interaction.followUp({ content: `${index + 1}/${formats.length}\n**${format.width}x${format.height}** | **${format.qualityLabel}** | **${format.fps}fps** | Video Quality: **${format.quality}** | Audio Quality: **${format.audioQuality}**\n\n${format.url}` })
                     }
                 } catch (error) {
                     console.error(error)
@@ -115,7 +110,7 @@ module.exports = {
             await interaction.deferReply()
 
             // convert shortened url to full url with id
-            const response = await axios.get(url, { maxRedirects: 1 }, { headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.159 Safari/537.36' } })
+            const response = await axios.get(url, { maxRedirects: 1 }, { headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.159 Safari/537.36', 'Accept-Encoding': 'gzip,deflate,compress' } })
 
             const video = await axios.post('https://tikfast.net/tik-download/download-link', {
                 0: response.request.res.responseUrl
