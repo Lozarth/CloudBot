@@ -26,11 +26,11 @@ module.exports = {
                 .setRequired(true),
         )
         .addStringOption(option => 
-            option.setName('sendasfile')
+            option.setName('uploadtype')
                 .setDescription('Send video as a file or link. Links will bypass file size limit.')
                 .addChoices(
-                    { name: 'Send as file', value: 'yes' },
-                    { name: 'Send as link', value: 'no' }
+                    { name: 'Send video as file', value: 'file' },
+                    { name: 'Send video as link', value: 'link' }
                 )
                 .setRequired(true)
         ),
@@ -45,7 +45,7 @@ module.exports = {
 
         if (interaction.channel.id !== channelId) return interaction.reply({ content: 'You can only use this command in your upload channel!', ephemeral: true })
 
-        const sendasfile = interaction.options.getString('sendasfile')
+        const uploadtype = interaction.options.getString('uploadtype')
 
         if (platform === 'youtube') {
             const videoRegex = /^((?:https?:)?\/\/)?((?:www|m)\.)?((?:youtube\.com|youtu.be))(\/(?:[\w\-]+\?v=|embed\/|v\/)?)([\w\-]+)(\S+)?$/gm
@@ -56,14 +56,14 @@ module.exports = {
             const videoInfo = await ytdl.getInfo(url)
 
             // stop if video is longer than 30 minutes
-            if (videoInfo.videoDetails.lengthSeconds > 1800 && interaction.options.getString('sendasfile') === 'yes') return interaction.followUp({ content: 'Video is longer than 30 minutes!' })
+            if (videoInfo.videoDetails.lengthSeconds > 1800 && uploadtype === 'file') return interaction.followUp({ content: 'Video is longer than 30 minutes!' })
 
             const formats = ytdl.filterFormats(videoInfo.formats, 'audioandvideo')
             const videoTitle = videoInfo.videoDetails.title
             
             for (const [index, format] of formats.entries()) {
                 try {
-                    if (sendasfile === 'yes') {
+                    if (uploadtype === 'file') {
                         await interaction.followUp({ content: `${index + 1}/${formats.length}\n**${format.width}x${format.height}** | **${format.qualityLabel}** | **${format.fps}fps** | Video Quality: **${format.quality}** | Audio Quality: **${format.audioQuality}**`, files: [{ attachment: format.url, name: `${videoTitle}.${format.container}` }] })
                     } else {
                         await interaction.followUp({ content: `${index + 1}/${formats.length}\n**${format.width}x${format.height}** | **${format.qualityLabel}** | **${format.fps}fps** | Video Quality: **${format.quality}** | Audio Quality: **${format.audioQuality}**\n\n${format.url}` })
@@ -94,7 +94,7 @@ module.exports = {
 
             for (const [index, video] of tweet.download.entries()) {
                 try {
-                    if (sendasfile === 'yes') {
+                    if (uploadtype === 'file') {
                         await interaction.followUp({ content: `${index + 1}/${tweet.download.length}\n**${video.dimension}**`, files: [{ attachment: video.url }] })
                     } else {
                         await interaction.followUp({ content: `${index + 1}/${tweet.download.length}\n**${video.dimension}**\n${video.url}` })
@@ -124,7 +124,7 @@ module.exports = {
             const randomString = Math.random().toString(36).substring(2, 8)
 
             try {
-                if (sendasfile === 'yes') {
+                if (uploadtype === 'file') {
                     await interaction.followUp({ files: [{ attachment: videoUrlDecoded, name: `${randomString}.mp4` }] })
                 } else {
                     await interaction.followUp({ content: videoUrlDecoded })
@@ -157,7 +157,7 @@ module.exports = {
             if (videoUrl === '' || videoUrl === null) return interaction.followUp({ content: 'Video not found!' })
 
             try {
-                if (sendasfile === 'yes') {
+                if (uploadtype === 'file') {
                     await interaction.followUp({ files: [{ attachment: `https://sd.redditsave.com/download.php?permalink=${permalink}/&video_url=${videoUrl}&audio_url=${audioUrl}`, name: `${videoTitle}.mp4` }] })
                 } else {
                     await interaction.followUp({ content: `https://sd.redditsave.com/download.php?permalink=${permalink}/&video_url=${videoUrl}&audio_url=${audioUrl}` })
