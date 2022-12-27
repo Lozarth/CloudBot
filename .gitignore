@@ -2,3 +2,4 @@
 .env
 embeds.txt
 node_modules
+database.json
