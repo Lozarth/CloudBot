@@ -1,5 +1,5 @@
 # Sensitive or useless files
 .env
 embeds.txt
-node_modules
 database.json
+node_modules
