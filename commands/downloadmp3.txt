@@ -1,0 +1,88 @@
+const { SlashCommandBuilder } = require('discord.js')
+
+const ytdl = require('ytdl-core')
+const axios = require('axios')
+const twitter = require('twitter-url-direct')
+
+module.exports = {
+    data: new SlashCommandBuilder()
+        .setName('downloadmp3')
+        .setDescription('Downloads audio from Youtube, Twitter, Tiktok, Reddit, Instagram')
+        .addStringOption(option =>
+            option.setName('url')
+                .setDescription('The link of the video')
+                .setRequired(true)
+        )
+        .addStringOption(option =>
+            option.setName('platform')
+                .setDescription('The platform of the video')
+                .addChoices(
+                    { name: 'YouTube', value: 'youtube' },
+                    { name: 'Twitter', value: 'twitter' },
+                    { name: 'TikTok', value: 'tiktok' },
+                    { name: 'Reddit', value: 'reddit' },
+                    { name: 'Instagram', value: 'instagram' }
+                )
+                .setRequired(true),
+        )
+        .addStringOption(option =>
+            option.setName('uploadtype')
+                .setDescription('Send audio as a file or link. Links will bypass file size limit.')
+                .addChoices(
+                    { name: 'Send audio as file', value: 'file' },
+                    { name: 'Send audio as link', value: 'link' }
+                )
+                .setRequired(true)
+        ),
+    run: async (client, interaction, db) => {
+        const url = interaction.options.getString('url')
+        const platform = interaction.options.getString('platform')
+        const uploadtype = interaction.options.getString('uploadtype')
+
+        const hasChannel = db.has(interaction.user.id)
+        if (!hasChannel) return interaction.reply({ content: `You don't have an upload channel!\n<#1041848988158148639>`, ephemeral: true })
+
+        const channelId = db.get(interaction.user.id)
+
+        if (interaction.channel.id !== channelId) return interaction.reply({ content: 'You can only use this command in your upload channel!', ephemeral: true })
+
+        if (platform === 'youtube') {
+            const videoRegex = /^((?:https?:)?\/\/)?((?:www|m)\.)?((?:youtube\.com|youtu.be))(\/(?:[\w\-]+\?v=|embed\/|v\/)?)([\w\-]+)(\S+)?$/gm
+            if (!videoRegex.test(url)) return interaction.reply({ content: 'Invalid YouTube URL!', ephemeral: true })
+
+            await interaction.deferReply()
+
+            const videoInfo = await ytdl.getInfo(url)
+
+            // stop if video is longer than 30 minutes
+            if (videoInfo.videoDetails.lengthSeconds > 1800 && uploadtype === 'file') return interaction.followUp({ content: 'Video is longer than 30 minutes!' })
+
+            const formats = ytdl.filterFormats(videoInfo.formats, 'audioonly', { quality: 'highestaudio' })
+            const videoTitle = videoInfo.videoDetails.title
+
+            console.log(formats)
+
+            for (const [index, format] of formats.entries()) {
+                console.log(index)
+                try {
+                    if (uploadtype === 'file') {
+                        await interaction.followUp({ content: `${index + 1}/${formats.length}\nAudio Quality: **${format.audioQuality}**\nAudio Bitrate: **${format.audioBitrate}**\nAudio Sample Rate: **${format.audioSampleRate}**`, files: [{ attachment: format.url, name: `${videoTitle}.${format.container}` }] })
+                    } else {
+                        await interaction.followUp({ content: `${index + 1}/${formats.length}\nAudio Quality: **${format.audioQuality}**\nAudio Bitrate: **${format.audioBitrate}**\nAudio Sample Rate: **${format.audioSampleRate}**\n\n${format.url}` })
+                    }
+                } catch (error) {
+                    console.error(error)
+                    await interaction.followUp({ content: `I couldn't send this audio!\n\`\`${error}\`\`` })
+                }
+            }
+        } else if (platform === 'twitter') {
+
+        } else if (platform === 'tiktok') {
+
+        } else if (platform === 'reddit') {
+
+        } else if (platform === 'instagram') {
+
+        }
+    }
+}

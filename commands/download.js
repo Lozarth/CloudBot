@@ -37,6 +37,7 @@ module.exports = {
     run: async (client, interaction, db) => {
         const url = interaction.options.getString('url')
         const platform = interaction.options.getString('platform')
+        const uploadtype = interaction.options.getString('uploadtype')
 
         const hasChannel = db.has(interaction.user.id)
         if (!hasChannel) return interaction.reply({ content: `You don't have an upload channel!\n<#1041848988158148639>`, ephemeral: true })
@@ -44,8 +45,6 @@ module.exports = {
         const channelId = db.get(interaction.user.id)
 
         if (interaction.channel.id !== channelId) return interaction.reply({ content: 'You can only use this command in your upload channel!', ephemeral: true })
-
-        const uploadtype = interaction.options.getString('uploadtype')
 
         if (platform === 'youtube') {
             const videoRegex = /^((?:https?:)?\/\/)?((?:www|m)\.)?((?:youtube\.com|youtu.be))(\/(?:[\w\-]+\?v=|embed\/|v\/)?)([\w\-]+)(\S+)?$/gm
