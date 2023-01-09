@@ -28,14 +28,22 @@ module.exports = {
         await channel.permissionOverwrites.set([
             {
                 id: interaction.user.id,
-                allow: [PermissionsBitField.Flags.ViewChannel, PermissionsBitField.Flags.SendMessages, PermissionsBitField.Flags.AttachFiles]
+                allow: [
+                    PermissionsBitField.Flags.ViewChannel,
+                    PermissionsBitField.Flags.SendMessages,
+                    PermissionsBitField.Flags.AttachFiles,
+                    PermissionsBitField.Flags.EmbedLinks,
+                    PermissionsBitField.Flags.CreatePublicThreads,
+                    PermissionsBitField.Flags.CreatePrivateThreads,
+                    PermissionsBitField.Flags.ManageMessages
+                ]
             },
             {
                 id: guild.roles.everyone,
                 deny: [PermissionsBitField.Flags.ViewChannel]
             },
             {
-                id: '1041848288070090902',
+                id: '1041848288070090902',  
                 deny: [PermissionsBitField.Flags.ViewChannel]
             }
         ])
