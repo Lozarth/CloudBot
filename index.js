@@ -5,12 +5,12 @@ const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBit
 
 const JSONdb = require('simple-json-db')
 const db = new JSONdb('./database.json')
+const fs = require('fs')
+const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch(...args))
 
 client.commands = new Collection()
 client.buttons = new Collection()
 client.contextMenus = new Collection()
-
-const fs = require('fs')
 
 const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'))
 const buttonFiles = fs.readdirSync('./buttons').filter(file => file.endsWith('.js'))
@@ -74,7 +74,7 @@ client.on('interactionCreate', async (interaction) => {
     if (interaction.isChatInputCommand()) {
         if (client.commands.get(interaction.commandName)) {
             try {
-                await client.commands.get(interaction.commandName).run(client, interaction, db)
+                await client.commands.get(interaction.commandName).run(client, interaction, db, fetch)
             } catch (error) {
                 console.error(error)
                 return interaction.followUp({ content: `There was an error while executing this command!\n\`\`${error}\`\``, ephemeral: true })
