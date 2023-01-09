@@ -1,4 +1,5 @@
 const { SlashCommandBuilder } = require('discord.js')
+const axios = require('axios')
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -12,7 +13,8 @@ module.exports = {
     run: async (client, interaction, db) => {
         if (interaction.user.id !== '339492485854396426') return interaction.reply({ content: 'You are not the bot owner!', ephemeral: true })
 
-        const code = interaction.options.getAttachment('code').value
+        const attachment = interaction.options.getAttachment('code')
+        const code = await axios.get(attachment.url).then(res => res.data)
 
         let result
         try {
