@@ -1,7 +1,6 @@
 const { SlashCommandBuilder, EmbedBuilder } = require('discord.js')
 
 const ytdl = require('ytdl-core')
-const axios = require('axios')
 const twitter = require('twitter-url-direct')
 
 module.exports = {
@@ -34,7 +33,7 @@ module.exports = {
                 )
                 .setRequired(true)
         ),
-    run: async (client, interaction, db) => {
+    run: async (client, interaction, db, fetch) => {
         const url = interaction.options.getString('url')
         const platform = interaction.options.getString('platform')
         const uploadtype = interaction.options.getString('uploadtype')
@@ -44,7 +43,7 @@ module.exports = {
 
         const channelId = db.get(interaction.user.id)
 
-        if (interaction.channel.id !== channelId) return interaction.reply({ content: 'You can only use this command in your upload channel!', ephemeral: true })
+        if (!(interaction.channel.id === channelId || interaction.channel.parentId === channelId)) return interaction.reply({ content: 'You can only use this command in your upload channel!', ephemeral: true })
 
         if (platform === 'youtube') {
             const videoRegex = /^((?:https?:)?\/\/)?((?:www|m)\.)?((?:youtube\.com|youtu.be))(\/(?:[\w\-]+\?v=|embed\/|v\/)?)([\w\-]+)(\S+)?$/gm
@@ -109,13 +108,23 @@ module.exports = {
             await interaction.deferReply()
 
             // convert shortened url to full url with id
-            const response = await axios.get(url, { maxRedirects: 1 }, { headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.159 Safari/537.36', 'Accept-Encoding': 'gzip,deflate,compress' } })
+            // const response = await fetch(url, {
+            //     headers: {
+            //         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:108.0) Gecko/20100101 Firefox/108.0'
+            //     }
+            // })
 
-            const video = await axios.post('https://tikfast.net/tik-download/download-link', {
-                0: response.request.res.responseUrl
-            })
+            const video = await fetch(`https://tikfast.net/tik-download/download-link`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    0: url
+                })
+            }).then(res => res.json())
 
-            const videoUrl = video.data.data[0].water_free_link
+            const videoUrl = video.data[0].water_free_link
 
             if (videoUrl === '' || videoUrl === null) return interaction.followUp({ content: 'Video not found!' })
 
@@ -142,12 +151,16 @@ module.exports = {
 
             await interaction.deferReply()
 
-            const redditPost = await axios.get(`${urlNoQuery}.json`, { headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.159 Safari/537.36' } })
+            const redditPost = await fetch(`${urlNoQuery}.json}`, {
+                headers: {
+                    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.159 Safari/537.36'
+                }
+            }).then(res => res.json())
 
             const videoTitle = redditPost.data[0].data.children[0].data.title
             const permalink = `https://reddit.com${redditPost.data[0].data.children[0].data.permalink}`
             const videoUrl = redditPost.data[0].data.children[0].data.media.reddit_video.fallback_url
-            const xmlData = await axios.get(redditPost.data[0].data.children[0].data.media.reddit_video.dash_url)
+            const xmlData = await fetch(redditPost.data[0].data.children[0].data.media.reddit_video.dash_url).then(res => res.text())
             const xml = xmlData.data
 
             const audioName = xml.split('<BaseURL>')[1].split('</BaseURL>')[0]

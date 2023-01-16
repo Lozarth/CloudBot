@@ -119,6 +119,12 @@ client.on('messageCreate', async (message) => {
             db.delete(`bump_${message.interaction.user.id}`)
         }, 7200000)
     }
+
+    // suggestions channel
+    if (message.type === MessageType.Default && message.channelId === '1064353823373668404') {
+        message.react('<:like:1048924377581879366>')
+        message.react('<:dislike:1048924402919678102>')
+    }
 })
 
 client.on('guildMemberAdd', async (member) => {
